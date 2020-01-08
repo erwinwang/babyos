@@ -8,7 +8,7 @@ boot.img: boot
 run:
 	qemu-system-i386 -m 512M \
 		-name "XBook Development Platform for x86" \
-		-fda boot.img -boot a \
+		-fda babyos.img -boot a \
 		-net nic,vlan=0,model=pcnet,macaddr=12:34:56:78:9a:be \
 		-net user,vlan=0 \
 		-serial stdio
