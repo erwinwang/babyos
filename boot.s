@@ -89,6 +89,7 @@ main:
 	call	draw_some_text
  
 1:
+	hlt
 	jmp		1b
  
 msg_str:
