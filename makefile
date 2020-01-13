@@ -11,18 +11,12 @@ load.o:load.s
 	as -o $@ $<
 bootsect.bin: bootsect.asm
 	nasm -o main.img bootsect.asm 
-
 babyos:bootsect.bin
 	dd if=bootsect.bin of=babyos.img bs=512 count=1 conv=notrunc
 run:
-	#qemu-system-i386 -m 512M \
-	#	-name "babyos" \
-	#	-fda babyos.img -boot a
-	qemu-system-i386 -hda main.img -S -s
-	gdb -ex 'target remote localhost:1234' \     
-	 	 -ex 'break *0x7c00' \     
-	 	 -ex 'continue' \     
-	 	 -ex 'x/3i $pc' 
+	qemu-system-i386 -m 512M \
+		-name "babyos" \
+		-fda babyos.img -boot a
 .PHONY: clean
 clean:
 	rm ./boot ./boot.o ./load ./load.o
