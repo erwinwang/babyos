@@ -176,17 +176,19 @@ bootmain(void)
     7c9b:	55                   	push   %ebp
     7c9c:	89 e5                	mov    %esp,%ebp
     unsigned long base = 0xb8000;
-
+    __asm ("cli");
+    7c9e:	fa                   	cli    
+    
     clear_screen();
-    7c9e:	e8 dd ff ff ff       	call   7c80 <clear_screen>
+    7c9f:	e8 dc ff ff ff       	call   7c80 <clear_screen>
     *(char*)base = 'A';
-    7ca3:	c6 05 00 80 0b 00 41 	movb   $0x41,0xb8000
+    7ca4:	c6 05 00 80 0b 00 41 	movb   $0x41,0xb8000
     base++;
-    *(char*)base = 0x80;
-    7caa:	c6 05 01 80 0b 00 80 	movb   $0x80,0xb8001
+    *(char*)base = 0xfc;
+    7cab:	c6 05 01 80 0b 00 fc 	movb   $0xfc,0xb8001
     for (;;)
     {
         /* code */
          __asm ("hlt");
-    7cb1:	f4                   	hlt    
-    7cb2:	eb fd                	jmp    7cb1 <bootmain+0x16>
+    7cb2:	f4                   	hlt    
+    7cb3:	eb fd                	jmp    7cb2 <bootmain+0x17>

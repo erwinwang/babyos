@@ -25,11 +25,12 @@ void
 bootmain(void)
 {
     unsigned long base = 0xb8000;
-
+    __asm ("cli");
+    
     clear_screen();
     *(char*)base = 'A';
     base++;
-    *(char*)base = 0x80;
+    *(char*)base = 0xfc;
     for (;;)
     {
         /* code */
