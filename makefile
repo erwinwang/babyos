@@ -1,18 +1,28 @@
-CC=gcc -m32
-LD=ld -m elf_i386
+CC = gcc
+LD = ld
+OBJCOPY = objcopy
+OBJDUMP = objdump
+CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
+#CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
 
 QEMU = qemu-system-i386
-all: babyos
-babyos: bootsect.bin
 boot: boot.o
 	ld --oformat binary -N -Ttext 0x7c00 -o $@ $<
 
 load.o:load.s
 	as -o $@ $<
-bootsect.bin: bootsect.asm
-	nasm -o main.img bootsect.asm 
-babyos:bootsect.bin
-	dd if=bootsect.bin of=babyos.img bs=512 count=1 conv=notrunc
+
+bootblock: bootasm.S bootmain.c
+	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c bootmain.c
+	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c bootasm.S
+	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
+	$(OBJDUMP) -S bootblock.o > bootblock.asm
+	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
+	./sign.pl bootblock
+
+babyos:
+	dd if=bootblock of=babyos.img bs=512 count=1 conv=notrunc
 run:
 	qemu-system-i386 -m 512M \
 		-name "babyos" \
