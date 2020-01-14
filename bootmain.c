@@ -8,11 +8,35 @@
 #define SECTSIZE  512
 
 // void readseg(uchar*, uint, uint);
+void clear_screen()
+{
+    unsigned long base = 0xb8000;
+    for (int i = 0; i < 80 * 25; i++)
+    {
+        /* code */
+        *(char*)base = ' ';
+        base++;
+        *(char*)base = 0x07;
+        base++;
+    }
+}
 
 void
 bootmain(void)
 {
-    asm ("hlt");
+    unsigned long base = 0xb8000;
+
+    clear_screen();
+    *(char*)base = 'A';
+    base++;
+    *(char*)base = 0x80;
+    for (;;)
+    {
+        /* code */
+         __asm ("hlt");
+    }
+    
+   
 //   struct elfhdr *elf;
 //   struct proghdr *ph, *eph;
 //   void (*entry)(void);

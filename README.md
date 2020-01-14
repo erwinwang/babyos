@@ -1,6 +1,12 @@
 # babyos
  A baby OS
 
+ 2020.1.14
+    gcc支持c99语法 for(int i = 0;) 
+        选项-std=c99
+        嵌入汇编由原来的asm()变成__asm()
+
+
  2020.1.13
     gdb + qemu + boot源码级调试
     qemu -s -S选项控制 -hda babyos.img

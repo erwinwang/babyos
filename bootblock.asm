@@ -60,7 +60,7 @@ seta20.2:
   # effective memory map doesn't change during the transition.
   lgdt    gdtdesc
     7c1d:	0f 01 16             	lgdtl  (%esi)
-    7c20:	78 7c                	js     7c9e <bootmain+0x1e>
+    7c20:	78 7c                	js     7c9e <bootmain+0x3>
   movl    %cr0, %eax
     7c22:	0f 20 c0             	mov    %cr0,%eax
   orl     $CR0_PE, %eax
@@ -100,7 +100,7 @@ start32:
   movl    $start, %esp
     7c43:	bc 00 7c 00 00       	mov    $0x7c00,%esp
   call    bootmain
-    7c48:	e8 33 00 00 00       	call   7c80 <bootmain>
+    7c48:	e8 4e 00 00 00       	call   7c9b <bootmain>
 
   # If bootmain returns (it shouldn't), trigger a Bochs
   # breakpoint if running under Bochs, then loop.
@@ -139,22 +139,54 @@ spin:
     7c7e:	90                   	nop
     7c7f:	90                   	nop
 
-00007c80 <bootmain>:
+00007c80 <clear_screen>:
+
+#define SECTSIZE  512
 
 // void readseg(uchar*, uint, uint);
+void clear_screen()
+{
+    7c80:	55                   	push   %ebp
+    7c81:	89 e5                	mov    %esp,%ebp
+    unsigned long base = 0xb8000;
+    7c83:	b8 00 80 0b 00       	mov    $0xb8000,%eax
+    for (int i = 0; i < 80 * 25; i++)
+    {
+        /* code */
+        *(char*)base = ' ';
+    7c88:	c6 00 20             	movb   $0x20,(%eax)
+        base++;
+        *(char*)base = 0x07;
+    7c8b:	c6 40 01 07          	movb   $0x7,0x1(%eax)
+        base++;
+    7c8f:	83 c0 02             	add    $0x2,%eax
+    for (int i = 0; i < 80 * 25; i++)
+    7c92:	3d a0 8f 0b 00       	cmp    $0xb8fa0,%eax
+    7c97:	75 ef                	jne    7c88 <clear_screen+0x8>
+    }
+}
+    7c99:	5d                   	pop    %ebp
+    7c9a:	c3                   	ret    
+
+00007c9b <bootmain>:
 
 void
 bootmain(void)
 {
-    7c80:	55                   	push   %ebp
-    7c81:	89 e5                	mov    %esp,%ebp
-    asm ("hlt");
-    7c83:	f4                   	hlt    
+    7c9b:	55                   	push   %ebp
+    7c9c:	89 e5                	mov    %esp,%ebp
+    unsigned long base = 0xb8000;
 
-//   // Call the entry point from the ELF header.
-//   // Does not return!
-//   entry = (void(*)(void))(elf->entry);
-//   entry();
-}
-    7c84:	5d                   	pop    %ebp
-    7c85:	c3                   	ret    
+    clear_screen();
+    7c9e:	e8 dd ff ff ff       	call   7c80 <clear_screen>
+    *(char*)base = 'A';
+    7ca3:	c6 05 00 80 0b 00 41 	movb   $0x41,0xb8000
+    base++;
+    *(char*)base = 0x80;
+    7caa:	c6 05 01 80 0b 00 80 	movb   $0x80,0xb8001
+    for (;;)
+    {
+        /* code */
+         __asm ("hlt");
+    7cb1:	f4                   	hlt    
+    7cb2:	eb fd                	jmp    7cb1 <bootmain+0x16>
