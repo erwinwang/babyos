@@ -140,10 +140,10 @@ spin:
     7c7f:	90                   	nop
 
 00007c80 <clear_screen>:
-
 #define SECTSIZE  512
 
 void readseg(uchar*, uint, uint);
+
 void clear_screen()
 {
     7c80:	55                   	push   %ebp
