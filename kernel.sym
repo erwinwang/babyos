@@ -1,6 +1,6 @@
 80100000 .text
-80100048 .stab
-80100049 .stabstr
+80100060 .stab
+80100061 .stabstr
 80101000 .data
 80102000 .bss
 00000000 .debug_line
@@ -10,10 +10,12 @@
 00000000 .debug_frame
 00000000 .debug_loc
 00000000 .comment
+00000000 io.asm
 00000000 main.c
 8010000c entry
+80100040 io_hlt
 80102000 stack
 80101000 entrypgdir
 0010000c _start
 80100000 multiboot_header
-80100034 main
+80100044 main

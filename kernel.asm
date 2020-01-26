@@ -44,29 +44,38 @@ entry:
   # the assembler produces a PC-relative instruction
   # for a direct jump.
   mov $main, %eax
-8010002d:	b8 34 00 10 80       	mov    $0x80100034,%eax
+8010002d:	b8 44 00 10 80       	mov    $0x80100044,%eax
   jmp *%eax
 80100032:	ff e0                	jmp    *%eax
+	...
 
-80100034 <main>:
+80100040 <io_hlt>:
+80100040:	f4                   	hlt    
+80100041:	c3                   	ret    
+	...
+
+80100044 <main>:
 // Bootstrap processor starts running C code here.
 // Allocate a real stack and switch to it, first
 // doing some setup required for memory allocator to work.
 int
 main(void)
 {
-80100034:	55                   	push   %ebp
-80100035:	89 e5                	mov    %esp,%ebp
+80100044:	55                   	push   %ebp
+80100045:	89 e5                	mov    %esp,%ebp
+80100047:	83 e4 f0             	and    $0xfffffff0,%esp
     unsigned long base = 0xb8000;
     base += 2;
     *(char*)base = 'M';
-80100037:	c6 05 02 80 0b 00 4d 	movb   $0x4d,0xb8002
+8010004a:	c6 05 02 80 0b 00 4d 	movb   $0x4d,0xb8002
     base++;
     *(char*)base = 0xfc;
-8010003e:	c6 05 03 80 0b 00 fc 	movb   $0xfc,0xb8003
+80100051:	c6 05 03 80 0b 00 fc 	movb   $0xfc,0xb8003
     for (;;)
     {
-        /* code */
          __asm ("hlt");
-80100045:	f4                   	hlt    
-80100046:	eb fd                	jmp    80100045 <main+0x11>
+80100058:	f4                   	hlt    
+        extern void io_hlt();
+        io_hlt();
+80100059:	e8 e2 ff ff ff       	call   80100040 <io_hlt>
+8010005e:	eb f8                	jmp    80100058 <main+0x14>
