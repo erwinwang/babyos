@@ -10,6 +10,7 @@
 // static void mpmain(void)  __attribute__((noreturn));
 extern pde_t *kpgdir;
 extern char end[]; // first address after kernel loaded from ELF file
+extern void io_hlt();
 
 // Bootstrap processor starts running C code here.
 // Allocate a real stack and switch to it, first
@@ -22,16 +23,21 @@ main(void)
     *(char*)base = 'M';
     base++;
     *(char*)base = 0xfc;
-    for (;;)
+    extern void test();
+    while(1)
     {
+        // test();
          __asm ("hlt");
-        extern void io_hlt();
-        io_hlt();
+      //io_hlt();
     }
-    base++;
-    *(char*)base = 'M';
-    base++;
-    *(char*)base = 0xfc;
+    // nhuy
+    return 0;
+}
+
+// Dump fixed
+void dump()
+{
+  io_hlt();
 }
 
 pde_t entrypgdir[];  // For entry.S

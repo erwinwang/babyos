@@ -2,7 +2,8 @@
 ;--------------------------
 ;void io_hlt();
 ;--------------------------
-.text 
+align 4
+section .text 
 io_hlt:
     hlt
     ret

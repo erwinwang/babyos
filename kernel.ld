@@ -39,6 +39,7 @@ SECTIONS
 	}
 
 	/* Adjust the address for the data segment to the next page */
+	/*. = ALIGN(0x1000);*/
 	. = ALIGN(0x1000);
 
 	/* Conventionally, Unix linkers provide pseudo-symbols
