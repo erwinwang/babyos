@@ -1,9 +1,5 @@
-    global io_hlt
-;--------------------------
-;void io_hlt();
-;--------------------------
-align 4
-section .text 
+section .text
+global io_hlt
 io_hlt:
-    hlt
+    hlt 
     ret

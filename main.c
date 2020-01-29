@@ -18,26 +18,30 @@ extern void io_hlt();
 int
 main(void)
 {
+    int i = 0;
     unsigned long base = 0xb8000;
     base += 2;
     *(char*)base = 'M';
     base++;
     *(char*)base = 0xfc;
     extern void test();
-    while(1)
+    test();
+    while(i <= 100)
     {
-        // test();
-         __asm ("hlt");
-      //io_hlt();
+      // __asm ("hlt");
+      io_hlt();
     }
+    base+=6;
+    *(char*)base = '=';
+    base++;
+    *(char*)base = 0xfc;
+    while (1)
+    {
+      /* code */
+    }
+    
     // nhuy
     return 0;
-}
-
-// Dump fixed
-void dump()
-{
-  io_hlt();
 }
 
 pde_t entrypgdir[];  // For entry.S
