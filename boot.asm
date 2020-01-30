@@ -1,41 +1,26 @@
-%define STA_X   0x8       // Executable segment
-%define STA_W   0x2       // Writeable (non-executable segments)
-%define STA_R   0x2       // Readable (executable segments)
-bits 16
-global start
-start:
-    cli
+    org 0x7c00
+[bits 16]
+align 16
+Entry:
+	mov ax, cs
+	mov ds, ax
+	mov ss, ax
+	mov sp, 0
+	mov ax, 0xb800
+	mov es, ax
 
-    xor     ax,ax
-    mov     ds,ax
-    mov     es,ax
-    mov     ss,ax
+;clean screan
+CleanScreen:
+	mov ax, 0x02
+	int 0x10
+    mov byte [es:0],'B'
+	mov byte [es:1],0x07
+	mov byte [es:2],'O'
+	mov byte [es:3],0x07
+	mov byte [es:4],'O'
+	mov byte [es:5],0x07
+	mov byte [es:6],'T'
+	mov byte [es:7],0x07
 
-seta20.1:
-    in      al,0x64
-    test    al,0x2
-    jnz     seta20.1
-
-    mov     al,0xd1
-    out     0x64,al
-
-seta20.2:
-    in      al,0x64
-    test    al,0x2
-    jnz     seta20.2:
-
-align 4
-gdt:
-seg_nullasm:
-    dw 0, 0
-    db 0, 0, 
-    db 0, 0
-seg_kcode:
-    dw (0xffffffff >> 12) & 0xffff, 0x0 & 0xffff
-    db (0x0 >> 16) & 0xff, 
-    db 0x90 | STA_X | STA_R,
-    db 0xc0 | ((0xffffffff >> 28) & 0xf), (0x0 >> 24) & 0xff
-seg_kdata:
-    dw (0xffffffff >> 12) & 0xffff, 0x0 & 0xffff
-    db (0x0 >> 16) & 0xff, 0x90 | STA_W,
-    db 0xc0 | ((0xffffffff >> 28)) & 0xf, (0x0 >> 24) & 0xff
+    times 510-($-$$) db 0
+    dw 0xaa55
