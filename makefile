@@ -56,7 +56,6 @@ run:
 		-name "babyos" \
 		-fda babyos.img \
 		-boot a	\
-		-s -S
 
 .PHONY: clean
 clean:
