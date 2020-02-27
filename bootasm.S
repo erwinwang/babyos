@@ -84,6 +84,7 @@ start32:
   movw    $0x8ae0, %ax            # 0x8ae0 -> port 0x8a00
   outw    %ax, %dx
 spin:
+  hlt
   jmp     spin
 
 # Bootstrap GDT

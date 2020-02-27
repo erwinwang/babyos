@@ -7,26 +7,15 @@
 
 #include "types.h"
 #include "elf.h"
-#include "x86.h"
+#include "x86io.h"
 #include "memlayout.h"
 
 #define SECTSIZE  512
 
 void readseg(uchar*, uint, uint);
-
-void clear_screen()
-{
-    int i;
-    unsigned long base = 0xb8000;
-    for (i = 0; i < 80 * 25; i++)
-    {
-        /* code */
-        *(char*)base = ' ';
-        base++;
-        *(char*)base = 0x07;
-        base++;
-    }
-}
+void bootmain(void);
+void waitdisk(void);
+void readsect(void *dst, uint offset);
 
 void
 bootmain(void)
@@ -36,35 +25,44 @@ bootmain(void)
     void (*entry)(void);
     uchar* pa;
 
-    unsigned long base = 0xb8000;
-    clear_screen();
-    *(char*)base = 'B';
-    base++;
-    *(char*)base = 0xfc;
+    *(char*)(0xb8000 + 320) = 'E';
+    *(char*)(0xb8000 + 321) = 0x2f;
+    *(char*)(0xb8000 + 322) = 'L';
+    *(char*)(0xb8000 + 323) = 0x2f;
+    *(char*)(0xb8000 + 324) = 'F';
+    *(char*)(0xb8000 + 325) = 0x2f;
+
+    // elf = (struct elfhdr*)0x80000;  // scratch space
+
+    // //while (1);
+    // // Read 1st page off disk
+    // readseg((uchar*)elf, 4096, 0);
+    // while (1);
+
+    // // Is this an ELF executable?
+    // if(elf->magic != ELF_MAGIC)
+    //     return;  // let bootasm.S handle error
     
-    elf = (struct elfhdr*)0x10000;  // scratch space
 
-    // Read 1st page off disk
-    readseg((uchar*)elf, 4096, 0);
-
-    // Is this an ELF executable?
-    if(elf->magic != ELF_MAGIC)
-        return;  // let bootasm.S handle error
-
-    // Load each program segment (ignores ph flags).
-    ph = (struct proghdr*)((uchar*)elf + elf->phoff);
-    eph = ph + elf->phnum;
-    for(; ph < eph; ph++){
-        pa = (uchar*)ph->paddr;
-        readseg(pa, ph->filesz, ph->off);
-        if(ph->memsz > ph->filesz)
-            stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
-    }
+    // // Load each program segment (ignores ph flags).
+    // ph = (struct proghdr*)((uchar*)elf + elf->phoff);
+    // eph = ph + elf->phnum;
+    // for(; ph < eph; ph++){
+    //     pa = (uchar*)ph->paddr;
+    //     readseg(pa, ph->filesz, ph->off);
+    //     if(ph->memsz > ph->filesz)
+    //         stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
+    // }
 
   // Call the entry point from the ELF header.
   // Does not return!
-    entry = (void(*)(void))(elf->entry);
-    entry();
+    // entry = (void(*)(void))(elf->entry);
+    // entry();
+  // *(char*)(0xb8000 + 480) = '=';
+  // *(char*)(0xb8000 + 481) = 0x2f;
+  // entry = (void(*)(void))(0x100000);
+  // entry();
+ 
 }
 
 void
@@ -106,7 +104,8 @@ readseg(uchar* pa, uint count, uint offset)
   pa -= offset % SECTSIZE;
 
   // Translate from bytes to sectors; kernel starts at sector 1.
-  offset = (offset / SECTSIZE) + 1;
+  //offset = (offset / SECTSIZE) + 1;
+  offset = (offset / SECTSIZE) + 9;
 
   // If this is too slow, we could read lots of sectors at a time.
   // We'd write more to memory than asked, but it doesn't matter --

@@ -1,0 +1,176 @@
+
+kernel.elf:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+00100000 <start>:
+  100000:	31 c0                	xor    %eax,%eax
+  100002:	66 b8 10 00          	mov    $0x10,%ax
+  100006:	8e d8                	mov    %eax,%ds
+  100008:	8e c0                	mov    %eax,%es
+  10000a:	8e d0                	mov    %eax,%ss
+  10000c:	8e e0                	mov    %eax,%fs
+  10000e:	8e e8                	mov    %eax,%gs
+  100010:	bc 00 7c 00 00       	mov    $0x7c00,%esp
+  100015:	c6 05 80 82 0b 00 68 	movb   $0x68,0xb8280
+  10001c:	c6 05 81 82 0b 00 2f 	movb   $0x2f,0xb8281
+  100023:	c6 05 82 82 0b 00 65 	movb   $0x65,0xb8282
+  10002a:	c6 05 83 82 0b 00 2f 	movb   $0x2f,0xb8283
+  100031:	c6 05 84 82 0b 00 61 	movb   $0x61,0xb8284
+  100038:	c6 05 85 82 0b 00 2f 	movb   $0x2f,0xb8285
+  10003f:	c6 05 86 82 0b 00 64 	movb   $0x64,0xb8286
+  100046:	c6 05 87 82 0b 00 2f 	movb   $0x2f,0xb8287
+  10004d:	e8 06 00 00 00       	call   100058 <main>
+
+00100052 <spin>:
+  100052:	f4                   	hlt    
+  100053:	e9 fa ff ff ff       	jmp    100052 <spin>
+
+00100058 <main>:
+  100058:	55                   	push   %ebp
+  100059:	89 e5                	mov    %esp,%ebp
+  10005b:	83 e4 f0             	and    $0xfffffff0,%esp
+  10005e:	83 ec 20             	sub    $0x20,%esp
+  100061:	c6 44 24 1a 68       	movb   $0x68,0x1a(%esp)
+  100066:	c6 44 24 1b 65       	movb   $0x65,0x1b(%esp)
+  10006b:	c6 44 24 1c 6c       	movb   $0x6c,0x1c(%esp)
+  100070:	c6 44 24 1d 6c       	movb   $0x6c,0x1d(%esp)
+  100075:	c6 44 24 1e 6f       	movb   $0x6f,0x1e(%esp)
+  10007a:	c6 44 24 1f 00       	movb   $0x0,0x1f(%esp)
+  10007f:	c7 04 24 6d 00 00 00 	movl   $0x6d,(%esp)
+  100086:	e8 55 00 00 00       	call   1000e0 <put_char>
+  10008b:	c7 04 24 3d 00 00 00 	movl   $0x3d,(%esp)
+  100092:	e8 49 00 00 00       	call   1000e0 <put_char>
+  100097:	c7 04 24 3e 00 00 00 	movl   $0x3e,(%esp)
+  10009e:	e8 3d 00 00 00       	call   1000e0 <put_char>
+  1000a3:	8d 44 24 1a          	lea    0x1a(%esp),%eax
+  1000a7:	89 04 24             	mov    %eax,(%esp)
+  1000aa:	e8 11 00 00 00       	call   1000c0 <put_str>
+  1000af:	f4                   	hlt    
+  1000b0:	eb fd                	jmp    1000af <main+0x57>
+  1000b2:	90                   	nop
+  1000b3:	90                   	nop
+  1000b4:	90                   	nop
+  1000b5:	90                   	nop
+  1000b6:	90                   	nop
+  1000b7:	90                   	nop
+  1000b8:	90                   	nop
+  1000b9:	90                   	nop
+  1000ba:	90                   	nop
+  1000bb:	90                   	nop
+  1000bc:	90                   	nop
+  1000bd:	90                   	nop
+  1000be:	90                   	nop
+  1000bf:	90                   	nop
+
+001000c0 <put_str>:
+  1000c0:	53                   	push   %ebx
+  1000c1:	51                   	push   %ecx
+  1000c2:	31 c9                	xor    %ecx,%ecx
+  1000c4:	8b 5c 24 0c          	mov    0xc(%esp),%ebx
+
+001000c8 <put_str.goon>:
+  1000c8:	8a 0b                	mov    (%ebx),%cl
+  1000ca:	80 f9 00             	cmp    $0x0,%cl
+  1000cd:	74 0e                	je     1000dd <put_str.str_over>
+  1000cf:	89 0c 24             	mov    %ecx,(%esp)
+  1000d2:	e8 09 00 00 00       	call   1000e0 <put_char>
+  1000d7:	43                   	inc    %ebx
+  1000d8:	e9 eb ff ff ff       	jmp    1000c8 <put_str.goon>
+
+001000dd <put_str.str_over>:
+  1000dd:	59                   	pop    %ecx
+  1000de:	5b                   	pop    %ebx
+  1000df:	c3                   	ret    
+
+001000e0 <put_char>:
+  1000e0:	60                   	pusha  
+  1000e1:	66 b8 18 00          	mov    $0x18,%ax
+  1000e5:	8e e8                	mov    %eax,%gs
+  1000e7:	66 ba d4 03          	mov    $0x3d4,%dx
+  1000eb:	b0 0e                	mov    $0xe,%al
+  1000ed:	ee                   	out    %al,(%dx)
+  1000ee:	66 ba d5 03          	mov    $0x3d5,%dx
+  1000f2:	ec                   	in     (%dx),%al
+  1000f3:	88 c4                	mov    %al,%ah
+  1000f5:	66 ba d4 03          	mov    $0x3d4,%dx
+  1000f9:	b0 0f                	mov    $0xf,%al
+  1000fb:	ee                   	out    %al,(%dx)
+  1000fc:	66 ba d5 03          	mov    $0x3d5,%dx
+  100100:	ec                   	in     (%dx),%al
+  100101:	66 89 c3             	mov    %ax,%bx
+  100104:	8b 4c 24 24          	mov    0x24(%esp),%ecx
+  100108:	80 f9 0d             	cmp    $0xd,%cl
+  10010b:	74 42                	je     10014f <put_char.is_carriage_return>
+  10010d:	80 f9 0a             	cmp    $0xa,%cl
+  100110:	74 3d                	je     10014f <put_char.is_carriage_return>
+  100112:	80 f9 08             	cmp    $0x8,%cl
+  100115:	74 05                	je     10011c <put_char.is_backspace>
+  100117:	e9 19 00 00 00       	jmp    100135 <put_char.put_other>
+
+0010011c <put_char.is_backspace>:
+  10011c:	66 4b                	dec    %bx
+  10011e:	66 d1 e3             	shl    %bx
+  100121:	65 67 c6 07 20       	movb   $0x20,%gs:(%bx)
+  100126:	66 43                	inc    %bx
+  100128:	65 67 c6 07 07       	movb   $0x7,%gs:(%bx)
+  10012d:	66 d1 eb             	shr    %bx
+  100130:	e9 64 00 00 00       	jmp    100199 <put_char.set_cursor>
+
+00100135 <put_char.put_other>:
+  100135:	66 d1 e3             	shl    %bx
+  100138:	65 67 88 0f          	mov    %cl,%gs:(%bx)
+  10013c:	66 43                	inc    %bx
+  10013e:	65 67 c6 07 07       	movb   $0x7,%gs:(%bx)
+  100143:	66 d1 eb             	shr    %bx
+  100146:	66 43                	inc    %bx
+  100148:	66 81 fb d0 07       	cmp    $0x7d0,%bx
+  10014d:	7c 4a                	jl     100199 <put_char.set_cursor>
+
+0010014f <put_char.is_carriage_return>:
+  10014f:	66 31 d2             	xor    %dx,%dx
+  100152:	66 89 d8             	mov    %bx,%ax
+  100155:	66 be 50 00          	mov    $0x50,%si
+  100159:	66 f7 f6             	div    %si
+  10015c:	66 29 d3             	sub    %dx,%bx
+
+0010015f <put_char.is_carriage_return_end>:
+  10015f:	66 81 c3 50 00       	add    $0x50,%bx
+  100164:	66 81 fb d0 07       	cmp    $0x7d0,%bx
+
+00100169 <put_char.is_line_feed_end>:
+  100169:	7c 2e                	jl     100199 <put_char.set_cursor>
+
+0010016b <put_char.roll_screen>:
+  10016b:	fc                   	cld    
+  10016c:	b9 c0 03 00 00       	mov    $0x3c0,%ecx
+  100171:	be a0 80 0b 00       	mov    $0xb80a0,%esi
+  100176:	bf 00 80 0b 00       	mov    $0xb8000,%edi
+  10017b:	f3 a5                	rep movsl %ds:(%esi),%es:(%edi)
+  10017d:	bb 00 0f 00 00       	mov    $0xf00,%ebx
+  100182:	b9 50 00 00 00       	mov    $0x50,%ecx
+
+00100187 <put_char.cls>:
+  100187:	65 66 c7 03 20 07    	movw   $0x720,%gs:(%ebx)
+  10018d:	81 c3 02 00 00 00    	add    $0x2,%ebx
+  100193:	e2 f2                	loop   100187 <put_char.cls>
+  100195:	66 bb 80 07          	mov    $0x780,%bx
+
+00100199 <put_char.set_cursor>:
+  100199:	66 ba d4 03          	mov    $0x3d4,%dx
+  10019d:	b0 0e                	mov    $0xe,%al
+  10019f:	ee                   	out    %al,(%dx)
+  1001a0:	66 ba d5 03          	mov    $0x3d5,%dx
+  1001a4:	88 f8                	mov    %bh,%al
+  1001a6:	ee                   	out    %al,(%dx)
+  1001a7:	66 ba d4 03          	mov    $0x3d4,%dx
+  1001ab:	b0 0f                	mov    $0xf,%al
+  1001ad:	ee                   	out    %al,(%dx)
+  1001ae:	66 ba d5 03          	mov    $0x3d5,%dx
+  1001b2:	88 d8                	mov    %bl,%al
+  1001b4:	ee                   	out    %al,(%dx)
+
+001001b5 <put_char.put_char_done>:
+  1001b5:	61                   	popa   
+  1001b6:	c3                   	ret    

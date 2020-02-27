@@ -1,0 +1,2 @@
+BOOT_INFO_ADDR  equ     0x80000
+BOOT_INFO_SEG   equ     0x8000
