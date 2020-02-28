@@ -27,7 +27,7 @@ test.o: test.c
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c test.c
 
 bootblock: boot.asm bootmain.c
-	$(NASM) -f elf -o boot.o boot.asm
+	$(AS) -f elf32 -o boot.o boot.asm
 	#$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c bootasm.S
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c bootmain.c
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o boot.o bootmain.o
@@ -42,7 +42,7 @@ bootblock: boot.asm bootmain.c
 
 ##############################################################################################
 bootsect.bin: bootsect.asm
-	$(NASM) -o $@ $<
+	$(AS) -o $@ $<
 
 # loader4k.bin: loader.asm bootmain.c x86.asm
 # 	$(NASM) -f elf -o loader.o loader.asm
@@ -53,20 +53,20 @@ bootsect.bin: bootsect.asm
 # 	$(OBJCOPY) -S -O binary -j .text loader4k.o loader4k.bin
 
 loader.bin: loader.asm
-	$(NASM) -o $@ $<
+	$(AS) -o $@ $<
 
 head.o: head.asm
-	$(NASM) -f elf32 -o $@ $<
+	$(AS) -f elf32 -o $@ $<
 	
 main.o: main.c
 	$(CC) -c -o main.o main.c
 
 lib/kernel/print.o: lib/kernel/print.asm
-	$(NASM) -f elf32 -o $@ $<
+	$(AS) -f elf32 -o $@ $<
 
 kernel.elf: main.o head.o lib/kernel/print.o
 	$(LD) $(LDFLAGS) -e start -Ttext 0x100000 -o kernel.elf head.o main.o lib/kernel/print.o
-	$(OBJDUMP) -D kernel.elf > kernel.elf.dumpdisasm
+	$(OBJDUMP) -M intel -D kernel.elf > kernel.elf.dumpdisasm
 
 # kernel.bin: head.o main.o lib/kernel/print.o
 # 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x100000 -o kernel.elf head.o main.o lib/kernel/print.o
@@ -128,5 +128,4 @@ clean:
 	   *.bin \
 	   *.elf \
 	   lib/kernel/print.o \
-	   kernel.dumpdisasm \
-	   bootblock
+	   kernel.elf.dumpdisasm

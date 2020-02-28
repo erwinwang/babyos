@@ -5,22 +5,22 @@ kernel.elf:     file format elf32-i386
 Disassembly of section .text:
 
 00100000 <start>:
-  100000:	31 c0                	xor    %eax,%eax
-  100002:	66 b8 10 00          	mov    $0x10,%ax
-  100006:	8e d8                	mov    %eax,%ds
-  100008:	8e c0                	mov    %eax,%es
-  10000a:	8e d0                	mov    %eax,%ss
-  10000c:	8e e0                	mov    %eax,%fs
-  10000e:	8e e8                	mov    %eax,%gs
-  100010:	bc 00 7c 00 00       	mov    $0x7c00,%esp
-  100015:	c6 05 80 82 0b 00 68 	movb   $0x68,0xb8280
-  10001c:	c6 05 81 82 0b 00 2f 	movb   $0x2f,0xb8281
-  100023:	c6 05 82 82 0b 00 65 	movb   $0x65,0xb8282
-  10002a:	c6 05 83 82 0b 00 2f 	movb   $0x2f,0xb8283
-  100031:	c6 05 84 82 0b 00 61 	movb   $0x61,0xb8284
-  100038:	c6 05 85 82 0b 00 2f 	movb   $0x2f,0xb8285
-  10003f:	c6 05 86 82 0b 00 64 	movb   $0x64,0xb8286
-  100046:	c6 05 87 82 0b 00 2f 	movb   $0x2f,0xb8287
+  100000:	31 c0                	xor    eax,eax
+  100002:	66 b8 10 00          	mov    ax,0x10
+  100006:	8e d8                	mov    ds,eax
+  100008:	8e c0                	mov    es,eax
+  10000a:	8e d0                	mov    ss,eax
+  10000c:	8e e0                	mov    fs,eax
+  10000e:	8e e8                	mov    gs,eax
+  100010:	bc 00 7c 00 00       	mov    esp,0x7c00
+  100015:	c6 05 80 82 0b 00 68 	mov    BYTE PTR ds:0xb8280,0x68
+  10001c:	c6 05 81 82 0b 00 2f 	mov    BYTE PTR ds:0xb8281,0x2f
+  100023:	c6 05 82 82 0b 00 65 	mov    BYTE PTR ds:0xb8282,0x65
+  10002a:	c6 05 83 82 0b 00 2f 	mov    BYTE PTR ds:0xb8283,0x2f
+  100031:	c6 05 84 82 0b 00 61 	mov    BYTE PTR ds:0xb8284,0x61
+  100038:	c6 05 85 82 0b 00 2f 	mov    BYTE PTR ds:0xb8285,0x2f
+  10003f:	c6 05 86 82 0b 00 64 	mov    BYTE PTR ds:0xb8286,0x64
+  100046:	c6 05 87 82 0b 00 2f 	mov    BYTE PTR ds:0xb8287,0x2f
   10004d:	e8 06 00 00 00       	call   100058 <main>
 
 00100052 <spin>:
@@ -28,189 +28,241 @@ Disassembly of section .text:
   100053:	e9 fa ff ff ff       	jmp    100052 <spin>
 
 00100058 <main>:
-  100058:	55                   	push   %ebp
-  100059:	89 e5                	mov    %esp,%ebp
-  10005b:	83 e4 f0             	and    $0xfffffff0,%esp
-  10005e:	83 ec 20             	sub    $0x20,%esp
-  100061:	c7 04 24 6d 00 00 00 	movl   $0x6d,(%esp)
-  100068:	e8 73 00 00 00       	call   1000e0 <put_char>
-  10006d:	c7 04 24 3d 00 00 00 	movl   $0x3d,(%esp)
-  100074:	e8 67 00 00 00       	call   1000e0 <put_char>
-  100079:	c7 04 24 3e 00 00 00 	movl   $0x3e,(%esp)
-  100080:	e8 5b 00 00 00       	call   1000e0 <put_char>
-  100085:	c7 04 24 6e 00 00 00 	movl   $0x6e,(%esp)
-  10008c:	e8 4f 00 00 00       	call   1000e0 <put_char>
-  100091:	c7 04 24 0a 00 00 00 	movl   $0xa,(%esp)
-  100098:	e8 43 00 00 00       	call   1000e0 <put_char>
-  10009d:	c7 04 24 e4 11 10 00 	movl   $0x1011e4,(%esp)
-  1000a4:	e8 17 00 00 00       	call   1000c0 <put_str>
-  1000a9:	0f b6 05 e7 11 10 00 	movzbl 0x1011e7,%eax
-  1000b0:	88 44 24 1f          	mov    %al,0x1f(%esp)
-  1000b4:	f4                   	hlt    
-  1000b5:	eb fd                	jmp    1000b4 <main+0x5c>
-  1000b7:	90                   	nop
-  1000b8:	90                   	nop
-  1000b9:	90                   	nop
-  1000ba:	90                   	nop
-  1000bb:	90                   	nop
-  1000bc:	90                   	nop
-  1000bd:	90                   	nop
-  1000be:	90                   	nop
-  1000bf:	90                   	nop
+  100058:	55                   	push   ebp
+  100059:	89 e5                	mov    ebp,esp
+  10005b:	83 e4 f0             	and    esp,0xfffffff0
+  10005e:	83 ec 20             	sub    esp,0x20
+  100061:	c7 44 24 1c 07 02 10 	mov    DWORD PTR [esp+0x1c],0x100207
+  100068:	00 
+  100069:	c7 04 24 6d 00 00 00 	mov    DWORD PTR [esp],0x6d
+  100070:	e8 bb 00 00 00       	call   100130 <put_char>
+  100075:	c7 04 24 3d 00 00 00 	mov    DWORD PTR [esp],0x3d
+  10007c:	e8 af 00 00 00       	call   100130 <put_char>
+  100081:	c7 04 24 3e 00 00 00 	mov    DWORD PTR [esp],0x3e
+  100088:	e8 a3 00 00 00       	call   100130 <put_char>
+  10008d:	c7 04 24 6e 00 00 00 	mov    DWORD PTR [esp],0x6e
+  100094:	e8 97 00 00 00       	call   100130 <put_char>
+  100099:	c7 04 24 0a 00 00 00 	mov    DWORD PTR [esp],0xa
+  1000a0:	e8 8b 00 00 00       	call   100130 <put_char>
+  1000a5:	c7 04 24 4c 12 10 00 	mov    DWORD PTR [esp],0x10124c
+  1000ac:	e8 5f 00 00 00       	call   100110 <put_str>
+  1000b1:	8b 44 24 1c          	mov    eax,DWORD PTR [esp+0x1c]
+  1000b5:	89 04 24             	mov    DWORD PTR [esp],eax
+  1000b8:	e8 53 00 00 00       	call   100110 <put_str>
+  1000bd:	c7 04 24 60 12 10 00 	mov    DWORD PTR [esp],0x101260
+  1000c4:	e8 47 00 00 00       	call   100110 <put_str>
+  1000c9:	c6 05 80 12 10 00 2e 	mov    BYTE PTR ds:0x101280,0x2e
+  1000d0:	c6 05 81 12 10 00 62 	mov    BYTE PTR ds:0x101281,0x62
+  1000d7:	c6 05 82 12 10 00 73 	mov    BYTE PTR ds:0x101282,0x73
+  1000de:	c6 05 83 12 10 00 73 	mov    BYTE PTR ds:0x101283,0x73
+  1000e5:	c6 05 84 12 10 00 00 	mov    BYTE PTR ds:0x101284,0x0
+  1000ec:	c7 04 24 80 12 10 00 	mov    DWORD PTR [esp],0x101280
+  1000f3:	e8 18 00 00 00       	call   100110 <put_str>
+  1000f8:	0f b6 05 4f 12 10 00 	movzx  eax,BYTE PTR ds:0x10124f
+  1000ff:	88 44 24 1b          	mov    BYTE PTR [esp+0x1b],al
+  100103:	f4                   	hlt    
+  100104:	eb fd                	jmp    100103 <main+0xab>
+  100106:	90                   	nop
+  100107:	90                   	nop
+  100108:	90                   	nop
+  100109:	90                   	nop
+  10010a:	90                   	nop
+  10010b:	90                   	nop
+  10010c:	90                   	nop
+  10010d:	90                   	nop
+  10010e:	90                   	nop
+  10010f:	90                   	nop
 
-001000c0 <put_str>:
-  1000c0:	53                   	push   %ebx
-  1000c1:	51                   	push   %ecx
-  1000c2:	31 c9                	xor    %ecx,%ecx
-  1000c4:	8b 5c 24 0c          	mov    0xc(%esp),%ebx
+00100110 <put_str>:
+  100110:	53                   	push   ebx
+  100111:	51                   	push   ecx
+  100112:	31 c9                	xor    ecx,ecx
+  100114:	8b 5c 24 0c          	mov    ebx,DWORD PTR [esp+0xc]
 
-001000c8 <put_str.goon>:
-  1000c8:	8a 0b                	mov    (%ebx),%cl
-  1000ca:	80 f9 00             	cmp    $0x0,%cl
-  1000cd:	74 0e                	je     1000dd <put_str.str_over>
-  1000cf:	89 0c 24             	mov    %ecx,(%esp)
-  1000d2:	e8 09 00 00 00       	call   1000e0 <put_char>
-  1000d7:	43                   	inc    %ebx
-  1000d8:	e9 eb ff ff ff       	jmp    1000c8 <put_str.goon>
+00100118 <put_str.goon>:
+  100118:	8a 0b                	mov    cl,BYTE PTR [ebx]
+  10011a:	80 f9 00             	cmp    cl,0x0
+  10011d:	74 0e                	je     10012d <put_str.str_over>
+  10011f:	89 0c 24             	mov    DWORD PTR [esp],ecx
+  100122:	e8 09 00 00 00       	call   100130 <put_char>
+  100127:	43                   	inc    ebx
+  100128:	e9 eb ff ff ff       	jmp    100118 <put_str.goon>
 
-001000dd <put_str.str_over>:
-  1000dd:	59                   	pop    %ecx
-  1000de:	5b                   	pop    %ebx
-  1000df:	c3                   	ret    
+0010012d <put_str.str_over>:
+  10012d:	59                   	pop    ecx
+  10012e:	5b                   	pop    ebx
+  10012f:	c3                   	ret    
 
-001000e0 <put_char>:
-  1000e0:	60                   	pusha  
-  1000e1:	66 b8 18 00          	mov    $0x18,%ax
-  1000e5:	8e e8                	mov    %eax,%gs
-  1000e7:	66 ba d4 03          	mov    $0x3d4,%dx
-  1000eb:	b0 0e                	mov    $0xe,%al
-  1000ed:	ee                   	out    %al,(%dx)
-  1000ee:	66 ba d5 03          	mov    $0x3d5,%dx
-  1000f2:	ec                   	in     (%dx),%al
-  1000f3:	88 c4                	mov    %al,%ah
-  1000f5:	66 ba d4 03          	mov    $0x3d4,%dx
-  1000f9:	b0 0f                	mov    $0xf,%al
-  1000fb:	ee                   	out    %al,(%dx)
-  1000fc:	66 ba d5 03          	mov    $0x3d5,%dx
-  100100:	ec                   	in     (%dx),%al
-  100101:	66 89 c3             	mov    %ax,%bx
-  100104:	8b 4c 24 24          	mov    0x24(%esp),%ecx
-  100108:	80 f9 0d             	cmp    $0xd,%cl
-  10010b:	74 42                	je     10014f <put_char.is_carriage_return>
-  10010d:	80 f9 0a             	cmp    $0xa,%cl
-  100110:	74 3d                	je     10014f <put_char.is_carriage_return>
-  100112:	80 f9 08             	cmp    $0x8,%cl
-  100115:	74 05                	je     10011c <put_char.is_backspace>
-  100117:	e9 19 00 00 00       	jmp    100135 <put_char.put_other>
+00100130 <put_char>:
+  100130:	60                   	pusha  
+  100131:	66 b8 18 00          	mov    ax,0x18
+  100135:	8e e8                	mov    gs,eax
+  100137:	66 ba d4 03          	mov    dx,0x3d4
+  10013b:	b0 0e                	mov    al,0xe
+  10013d:	ee                   	out    dx,al
+  10013e:	66 ba d5 03          	mov    dx,0x3d5
+  100142:	ec                   	in     al,dx
+  100143:	88 c4                	mov    ah,al
+  100145:	66 ba d4 03          	mov    dx,0x3d4
+  100149:	b0 0f                	mov    al,0xf
+  10014b:	ee                   	out    dx,al
+  10014c:	66 ba d5 03          	mov    dx,0x3d5
+  100150:	ec                   	in     al,dx
+  100151:	66 89 c3             	mov    bx,ax
+  100154:	8b 4c 24 24          	mov    ecx,DWORD PTR [esp+0x24]
+  100158:	80 f9 0d             	cmp    cl,0xd
+  10015b:	74 42                	je     10019f <put_char.is_carriage_return>
+  10015d:	80 f9 0a             	cmp    cl,0xa
+  100160:	74 3d                	je     10019f <put_char.is_carriage_return>
+  100162:	80 f9 08             	cmp    cl,0x8
+  100165:	74 05                	je     10016c <put_char.is_backspace>
+  100167:	e9 19 00 00 00       	jmp    100185 <put_char.put_other>
 
-0010011c <put_char.is_backspace>:
-  10011c:	66 4b                	dec    %bx
-  10011e:	66 d1 e3             	shl    %bx
-  100121:	65 67 c6 07 20       	movb   $0x20,%gs:(%bx)
-  100126:	66 43                	inc    %bx
-  100128:	65 67 c6 07 07       	movb   $0x7,%gs:(%bx)
-  10012d:	66 d1 eb             	shr    %bx
-  100130:	e9 64 00 00 00       	jmp    100199 <put_char.set_cursor>
+0010016c <put_char.is_backspace>:
+  10016c:	66 4b                	dec    bx
+  10016e:	66 d1 e3             	shl    bx,1
+  100171:	65 67 c6 07 20       	mov    BYTE PTR gs:[bx],0x20
+  100176:	66 43                	inc    bx
+  100178:	65 67 c6 07 07       	mov    BYTE PTR gs:[bx],0x7
+  10017d:	66 d1 eb             	shr    bx,1
+  100180:	e9 64 00 00 00       	jmp    1001e9 <put_char.set_cursor>
 
-00100135 <put_char.put_other>:
-  100135:	66 d1 e3             	shl    %bx
-  100138:	65 67 88 0f          	mov    %cl,%gs:(%bx)
-  10013c:	66 43                	inc    %bx
-  10013e:	65 67 c6 07 07       	movb   $0x7,%gs:(%bx)
-  100143:	66 d1 eb             	shr    %bx
-  100146:	66 43                	inc    %bx
-  100148:	66 81 fb d0 07       	cmp    $0x7d0,%bx
-  10014d:	7c 4a                	jl     100199 <put_char.set_cursor>
+00100185 <put_char.put_other>:
+  100185:	66 d1 e3             	shl    bx,1
+  100188:	65 67 88 0f          	mov    BYTE PTR gs:[bx],cl
+  10018c:	66 43                	inc    bx
+  10018e:	65 67 c6 07 07       	mov    BYTE PTR gs:[bx],0x7
+  100193:	66 d1 eb             	shr    bx,1
+  100196:	66 43                	inc    bx
+  100198:	66 81 fb d0 07       	cmp    bx,0x7d0
+  10019d:	7c 4a                	jl     1001e9 <put_char.set_cursor>
 
-0010014f <put_char.is_carriage_return>:
-  10014f:	66 31 d2             	xor    %dx,%dx
-  100152:	66 89 d8             	mov    %bx,%ax
-  100155:	66 be 50 00          	mov    $0x50,%si
-  100159:	66 f7 f6             	div    %si
-  10015c:	66 29 d3             	sub    %dx,%bx
+0010019f <put_char.is_carriage_return>:
+  10019f:	66 31 d2             	xor    dx,dx
+  1001a2:	66 89 d8             	mov    ax,bx
+  1001a5:	66 be 50 00          	mov    si,0x50
+  1001a9:	66 f7 f6             	div    si
+  1001ac:	66 29 d3             	sub    bx,dx
 
-0010015f <put_char.is_carriage_return_end>:
-  10015f:	66 81 c3 50 00       	add    $0x50,%bx
-  100164:	66 81 fb d0 07       	cmp    $0x7d0,%bx
+001001af <put_char.is_carriage_return_end>:
+  1001af:	66 81 c3 50 00       	add    bx,0x50
+  1001b4:	66 81 fb d0 07       	cmp    bx,0x7d0
 
-00100169 <put_char.is_line_feed_end>:
-  100169:	7c 2e                	jl     100199 <put_char.set_cursor>
+001001b9 <put_char.is_line_feed_end>:
+  1001b9:	7c 2e                	jl     1001e9 <put_char.set_cursor>
 
-0010016b <put_char.roll_screen>:
-  10016b:	fc                   	cld    
-  10016c:	b9 c0 03 00 00       	mov    $0x3c0,%ecx
-  100171:	be a0 80 0b 00       	mov    $0xb80a0,%esi
-  100176:	bf 00 80 0b 00       	mov    $0xb8000,%edi
-  10017b:	f3 a5                	rep movsl %ds:(%esi),%es:(%edi)
-  10017d:	bb 00 0f 00 00       	mov    $0xf00,%ebx
-  100182:	b9 50 00 00 00       	mov    $0x50,%ecx
+001001bb <put_char.roll_screen>:
+  1001bb:	fc                   	cld    
+  1001bc:	b9 c0 03 00 00       	mov    ecx,0x3c0
+  1001c1:	be a0 80 0b 00       	mov    esi,0xb80a0
+  1001c6:	bf 00 80 0b 00       	mov    edi,0xb8000
+  1001cb:	f3 a5                	rep movs DWORD PTR es:[edi],DWORD PTR ds:[esi]
+  1001cd:	bb 00 0f 00 00       	mov    ebx,0xf00
+  1001d2:	b9 50 00 00 00       	mov    ecx,0x50
 
-00100187 <put_char.cls>:
-  100187:	65 66 c7 03 20 07    	movw   $0x720,%gs:(%ebx)
-  10018d:	81 c3 02 00 00 00    	add    $0x2,%ebx
-  100193:	e2 f2                	loop   100187 <put_char.cls>
-  100195:	66 bb 80 07          	mov    $0x780,%bx
+001001d7 <put_char.cls>:
+  1001d7:	65 66 c7 03 20 07    	mov    WORD PTR gs:[ebx],0x720
+  1001dd:	81 c3 02 00 00 00    	add    ebx,0x2
+  1001e3:	e2 f2                	loop   1001d7 <put_char.cls>
+  1001e5:	66 bb 80 07          	mov    bx,0x780
 
-00100199 <put_char.set_cursor>:
-  100199:	66 ba d4 03          	mov    $0x3d4,%dx
-  10019d:	b0 0e                	mov    $0xe,%al
-  10019f:	ee                   	out    %al,(%dx)
-  1001a0:	66 ba d5 03          	mov    $0x3d5,%dx
-  1001a4:	88 f8                	mov    %bh,%al
-  1001a6:	ee                   	out    %al,(%dx)
-  1001a7:	66 ba d4 03          	mov    $0x3d4,%dx
-  1001ab:	b0 0f                	mov    $0xf,%al
-  1001ad:	ee                   	out    %al,(%dx)
-  1001ae:	66 ba d5 03          	mov    $0x3d5,%dx
-  1001b2:	88 d8                	mov    %bl,%al
-  1001b4:	ee                   	out    %al,(%dx)
+001001e9 <put_char.set_cursor>:
+  1001e9:	66 ba d4 03          	mov    dx,0x3d4
+  1001ed:	b0 0e                	mov    al,0xe
+  1001ef:	ee                   	out    dx,al
+  1001f0:	66 ba d5 03          	mov    dx,0x3d5
+  1001f4:	88 f8                	mov    al,bh
+  1001f6:	ee                   	out    dx,al
+  1001f7:	66 ba d4 03          	mov    dx,0x3d4
+  1001fb:	b0 0f                	mov    al,0xf
+  1001fd:	ee                   	out    dx,al
+  1001fe:	66 ba d5 03          	mov    dx,0x3d5
+  100202:	88 d8                	mov    al,bl
+  100204:	ee                   	out    dx,al
 
-001001b5 <put_char.put_char_done>:
-  1001b5:	61                   	popa   
-  1001b6:	c3                   	ret    
+00100205 <put_char.put_char_done>:
+  100205:	61                   	popa   
+  100206:	c3                   	ret    
+
+Disassembly of section .rodata:
+
+00100207 <.rodata>:
+  100207:	6c                   	ins    BYTE PTR es:[edi],dx
+  100208:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  100209:	63 61 6c             	arpl   WORD PTR [ecx+0x6c],sp
+  10020c:	20 61 75             	and    BYTE PTR [ecx+0x75],ah
+  10020f:	74 6f                	je     100280 <put_char.put_char_done+0x7b>
+  100211:	20 68 65             	and    BYTE PTR [eax+0x65],ch
+  100214:	6c                   	ins    BYTE PTR es:[edi],dx
+  100215:	6c                   	ins    BYTE PTR es:[edi],dx
+  100216:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  100217:	20 77 6f             	and    BYTE PTR [edi+0x6f],dh
+  10021a:	72 6c                	jb     100288 <put_char.put_char_done+0x83>
+  10021c:	64 0a 00             	or     al,BYTE PTR fs:[eax]
 
 Disassembly of section .eh_frame:
 
-001011b8 <.eh_frame>:
-  1011b8:	10 00                	adc    %al,(%eax)
-  1011ba:	00 00                	add    %al,(%eax)
-  1011bc:	00 00                	add    %al,(%eax)
-  1011be:	00 00                	add    %al,(%eax)
-  1011c0:	01 00                	add    %eax,(%eax)
-  1011c2:	01 7c 08 0c          	add    %edi,0xc(%eax,%ecx,1)
-  1011c6:	04 04                	add    $0x4,%al
-  1011c8:	88 01                	mov    %al,(%ecx)
-  1011ca:	00 00                	add    %al,(%eax)
-  1011cc:	14 00                	adc    $0x0,%al
-  1011ce:	00 00                	add    %al,(%eax)
-  1011d0:	18 00                	sbb    %al,(%eax)
-  1011d2:	00 00                	add    %al,(%eax)
-  1011d4:	58                   	pop    %eax
-  1011d5:	00 10                	add    %dl,(%eax)
-  1011d7:	00 5f 00             	add    %bl,0x0(%edi)
-  1011da:	00 00                	add    %al,(%eax)
-  1011dc:	41                   	inc    %ecx
-  1011dd:	0e                   	push   %cs
-  1011de:	08 85 02 42 0d 05    	or     %al,0x50d4202(%ebp)
+00101220 <.eh_frame>:
+  101220:	10 00                	adc    BYTE PTR [eax],al
+  101222:	00 00                	add    BYTE PTR [eax],al
+  101224:	00 00                	add    BYTE PTR [eax],al
+  101226:	00 00                	add    BYTE PTR [eax],al
+  101228:	01 00                	add    DWORD PTR [eax],eax
+  10122a:	01 7c 08 0c          	add    DWORD PTR [eax+ecx*1+0xc],edi
+  10122e:	04 04                	add    al,0x4
+  101230:	88 01                	mov    BYTE PTR [ecx],al
+  101232:	00 00                	add    BYTE PTR [eax],al
+  101234:	14 00                	adc    al,0x0
+  101236:	00 00                	add    BYTE PTR [eax],al
+  101238:	18 00                	sbb    BYTE PTR [eax],al
+  10123a:	00 00                	add    BYTE PTR [eax],al
+  10123c:	58                   	pop    eax
+  10123d:	00 10                	add    BYTE PTR [eax],dl
+  10123f:	00 ae 00 00 00 41    	add    BYTE PTR [esi+0x41000000],ch
+  101245:	0e                   	push   cs
+  101246:	08 85 02 42 0d 05    	or     BYTE PTR [ebp+0x50d4202],al
 
 Disassembly of section .data:
 
-001011e4 <g_str>:
-  1011e4:	68 65 6c 6c 6f       	push   $0x6f6c6c65
-  1011e9:	20 77 6f             	and    %dh,0x6f(%edi)
-  1011ec:	72 6c                	jb     10125a <__bss_start+0x6a>
-  1011ee:	64                   	fs
+0010124c <g_str>:
+  10124c:	67 6c                	ins    BYTE PTR es:[di],dx
+  10124e:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  10124f:	62 61 6c             	bound  esp,QWORD PTR [ecx+0x6c]
+  101252:	20 68 65             	and    BYTE PTR [eax+0x65],ch
+  101255:	6c                   	ins    BYTE PTR es:[edi],dx
+  101256:	6c                   	ins    BYTE PTR es:[edi],dx
+  101257:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  101258:	20 77 6f             	and    BYTE PTR [edi+0x6f],dh
+  10125b:	72 6c                	jb     1012c9 <buf+0x49>
+  10125d:	64 0a 00             	or     al,BYTE PTR fs:[eax]
+
+00101260 <static_str.1230>:
+  101260:	6c                   	ins    BYTE PTR es:[edi],dx
+  101261:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  101262:	63 61 6c             	arpl   WORD PTR [ecx+0x6c],sp
+  101265:	20 73 74             	and    BYTE PTR [ebx+0x74],dh
+  101268:	61                   	popa   
+  101269:	74 69                	je     1012d4 <buf+0x54>
+  10126b:	63 20                	arpl   WORD PTR [eax],sp
+  10126d:	68 65 6c 6c 6f       	push   0x6f6c6c65
+  101272:	20 77 6f             	and    BYTE PTR [edi+0x6f],dh
+  101275:	72 6c                	jb     1012e3 <buf+0x63>
+  101277:	64 0a 00             	or     al,BYTE PTR fs:[eax]
+
+Disassembly of section .bss:
+
+00101280 <buf>:
 	...
 
 Disassembly of section .comment:
 
 00000000 <.comment>:
-   0:	47                   	inc    %edi
-   1:	43                   	inc    %ebx
-   2:	43                   	inc    %ebx
-   3:	3a 20                	cmp    (%eax),%ah
-   5:	28 47 4e             	sub    %al,0x4e(%edi)
-   8:	55                   	push   %ebp
-   9:	29 20                	sub    %esp,(%eax)
-   b:	34 2e                	xor    $0x2e,%al
-   d:	36 2e 31 00          	ss xor %eax,%cs:(%eax)
+   0:	47                   	inc    edi
+   1:	43                   	inc    ebx
+   2:	43                   	inc    ebx
+   3:	3a 20                	cmp    ah,BYTE PTR [eax]
+   5:	28 47 4e             	sub    BYTE PTR [edi+0x4e],al
+   8:	55                   	push   ebp
+   9:	29 20                	sub    DWORD PTR [eax],esp
+   b:	34 2e                	xor    al,0x2e
+   d:	36 2e 31 00          	ss xor DWORD PTR cs:[eax],eax
