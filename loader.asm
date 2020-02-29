@@ -128,12 +128,24 @@ start32:
 	mov byte [es:eax+1],0x07
 	mov byte [es:eax+2],'M'
 	mov byte [es:eax+3],0x07
+
+	call setup_page
+	mov byte [0x800b8000+160*3+0], 'P'
+	mov byte [0x800b8000+160*3+1], 0X07
+	mov byte [0x800b8000+160*3+2], 'A'
+	mov byte [0x800b8000+160*3+3], 0X07
+	mov byte [0x800b8000+160*3+4], 'G'
+	mov byte [0x800b8000+160*3+5], 0X07
+	mov byte [0x800b8000+160*3+6], 'E'
+	mov byte [0x800b8000+160*3+7], 0X07
 	;jmp $
     call read_kernel
 	;jmp $
 	jmp 0x08:0x100000
-	
-	jmp $
+
+spin:
+	hlt	
+	jmp spin
 
 align 16
 ; 遍历每一个 Program Header，根据 Program Header 中的信息来确定把什么放进内存，放到什么位置，以及放多少。
@@ -196,6 +208,40 @@ memcpy:
 	pop	ebp
 
 	ret			; 函数结束，返回
+
+
+;##############################################
+;分页机制
+;内核页目录表地址
+PAGE_DIR_PHY_ADDR EQU   0x201000
+;内核页表地址
+PAGE_TBL_PHY_ADDR EQU   0x202000
+;显存页表地址
+VRAM_PT_PHY_ADDR    EQU 0x203000
+
+PAGE_P_1	EQU  	1	; 0001 exist in memory
+PAGE_P_0	EQU  	0	; 0000 not exist in memory
+PAGE_RW_R  	EQU     0	; 0000 R/W read/execute
+PAGE_RW_W  	EQU     2	; 0010 R/W read/write/execute
+PAGE_US_S  	EQU     0	; 0000 U/S system level, cpl0,1,2
+PAGE_US_U  	EQU     4	; 0100 U/S user level, cpl3
+
+KERNEL_PAGE_ATTR    EQU (PAGE_US_S | PAGE_RW_W | PAGE_P_1)
+setup_page:
+	mov ecx,4096
+	xor esi,esi
+.clean_page_dir:
+	mov byte [PAGE_DIR_PHY_ADDR + esi],0
+	inc esi
+	loop .clean_page_dir
+.create_pde:
+	mov eax,PAGE_DIR_PHY_ADDR
+	add eax,0x1000
+	mov ebx,eax
+
+.fin:
+	ret
+;################################################
 
 align 16
 gdt_head:

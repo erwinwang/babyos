@@ -65,7 +65,7 @@ lib/kernel/print.o: lib/kernel/print.asm
 	$(AS) -f elf32 -o $@ $<
 
 kernel.elf: main.o head.o lib/kernel/print.o
-	$(LD) $(LDFLAGS) -e start -Ttext 0x100000 -o kernel.elf head.o main.o lib/kernel/print.o
+	$(LD) $(LDFLAGS) -N -e start -Ttext 0x100000 -o kernel.elf head.o main.o lib/kernel/print.o
 	$(OBJDUMP) -M intel -D kernel.elf > kernel.elf.dumpdisasm
 
 # kernel.bin: head.o main.o lib/kernel/print.o
