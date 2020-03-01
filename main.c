@@ -1,4 +1,4 @@
-#include "lib/kernel/print.h"
+#include "print.h"
 
 char buf[256];
 int main(void)

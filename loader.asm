@@ -129,15 +129,15 @@ start32:
 	mov byte [es:eax+2],'M'
 	mov byte [es:eax+3],0x07
 
-	call setup_page
-	mov byte [0x800b8000+160*3+0], 'P'
-	mov byte [0x800b8000+160*3+1], 0X07
-	mov byte [0x800b8000+160*3+2], 'A'
-	mov byte [0x800b8000+160*3+3], 0X07
-	mov byte [0x800b8000+160*3+4], 'G'
-	mov byte [0x800b8000+160*3+5], 0X07
-	mov byte [0x800b8000+160*3+6], 'E'
-	mov byte [0x800b8000+160*3+7], 0X07
+	;call setup_page
+	; mov byte [0x800b8000+160*3+0], 'P'
+	; mov byte [0x800b8000+160*3+1], 0X07
+	; mov byte [0x800b8000+160*3+2], 'A'
+	; mov byte [0x800b8000+160*3+3], 0X07
+	; mov byte [0x800b8000+160*3+4], 'G'
+	; mov byte [0x800b8000+160*3+5], 0X07
+	; mov byte [0x800b8000+160*3+6], 'E'
+	; mov byte [0x800b8000+160*3+7], 0X07
 	;jmp $
     call read_kernel
 	;jmp $

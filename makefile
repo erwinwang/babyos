@@ -61,11 +61,11 @@ head.o: head.asm
 main.o: main.c
 	$(CC) -c -o main.o main.c
 
-lib/kernel/print.o: lib/kernel/print.asm
+print.o: print.asm
 	$(AS) -f elf32 -o $@ $<
 
-kernel.elf: main.o head.o lib/kernel/print.o
-	$(LD) $(LDFLAGS) -N -e start -Ttext 0x100000 -o kernel.elf head.o main.o lib/kernel/print.o
+kernel.elf: main.o head.o print.o
+	$(LD) $(LDFLAGS) -N -e start -Ttext 0x100000 -o kernel.elf main.o head.o print.o
 	$(OBJDUMP) -M intel -D kernel.elf > kernel.elf.dumpdisasm
 
 # kernel.bin: head.o main.o lib/kernel/print.o
