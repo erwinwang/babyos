@@ -124,8 +124,6 @@ run:xv6.img
 
 .PHONY: clean
 clean:
-	rm *.o \
-	   *.bin \
-	   *.elf \
-	   lib/kernel/print.o \
-	   kernel.elf.dumpdisasm
+	rm *.o *.d \
+	*.bin *.elf *.sym *.img \
+	*.dumpdisasm

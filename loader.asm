@@ -38,21 +38,21 @@ Entry:
 	mov sp, 0x7c00
 
 	
-	mov ax, 0xb800
-	mov es, ax
-	;show 'LOADER'
-	mov byte [es:160+0],'L'
-	mov byte [es:160+1],0x07
-	mov byte [es:160+2],'O'
-	mov byte [es:160+3],0x07
-	mov byte [es:160+4],'A'
-	mov byte [es:160+5],0x07
-	mov byte [es:160+6],'D'
-	mov byte [es:160+7],0x07
-	mov byte [es:160+8],'E'
-	mov byte [es:160+9],0x07
-	mov byte [es:160+10],'R'
-	mov byte [es:160+11],0x07
+	; mov ax, 0xb800
+	; mov es, ax
+	; ;show 'LOADER'
+	; mov byte [es:160+0],'L'
+	; mov byte [es:160+1],0x07
+	; mov byte [es:160+2],'O'
+	; mov byte [es:160+3],0x07
+	; mov byte [es:160+4],'A'
+	; mov byte [es:160+5],0x07
+	; mov byte [es:160+6],'D'
+	; mov byte [es:160+7],0x07
+	; mov byte [es:160+8],'E'
+	; mov byte [es:160+9],0x07
+	; mov byte [es:160+10],'R'
+	; mov byte [es:160+11],0x07
 
 	;jmp $
 
@@ -79,12 +79,12 @@ reset:
     jmp retry
 
 read_ok:
-	mov ax,0xb800
-	mov es,ax
-	mov byte [es:320+0],'O'
-	mov byte [es:320+1],0x07
-	mov byte [es:320+2],'K'
-	mov byte [es:320+3],0x07
+	; mov ax,0xb800
+	; mov es,ax
+	; mov byte [es:320+0],'O'
+	; mov byte [es:320+1],0x07
+	; mov byte [es:320+2],'K'
+	; mov byte [es:320+3],0x07
 
 pm_prepare:
     cli
@@ -123,11 +123,11 @@ start32:
     mov gs,ax
     mov esp,190000
 
-    mov eax,0xb8000 + 480
-	mov byte [es:eax+0],'P'
-	mov byte [es:eax+1],0x07
-	mov byte [es:eax+2],'M'
-	mov byte [es:eax+3],0x07
+    ; mov eax,0xb8000 + 480
+	; mov byte [es:eax+0],'P'
+	; mov byte [es:eax+1],0x07
+	; mov byte [es:eax+2],'M'
+	; mov byte [es:eax+3],0x07
 
 	;call setup_page
 	; mov byte [0x800b8000+160*3+0], 'P'
