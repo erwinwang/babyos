@@ -1,6 +1,8 @@
 TI_GDT	 equ   000b
 RPL0  equ   00b
 SELECTOR_VIDEO equ (0x0003<<3) + TI_GDT + RPL0	 ; 同上
+[section .data]
+buf dq 0
 [bits 32]
 [section .text]
 global put_str
