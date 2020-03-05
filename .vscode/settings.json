@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "print.h": "c"
+        "print.h": "c",
+        "init.h": "c",
+        "string.h": "c",
+        "memory.h": "c"
     }
 }
