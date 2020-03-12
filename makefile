@@ -78,9 +78,9 @@ kernel.elf: $(OBJS)
 	
 babyos: bootsect.bin loader.bin kernel.elf
 	dd if=/dev/zero of=babyos.img bs=512 count=2880
-	dd if=bootsect.bin of=babyos.img conv=notrunc
-	dd if=loader.bin of=babyos.img bs=512 seek=1 conv=notrunc
-	dd if=kernel.elf of=babyos.img bs=512 seek=3 conv=notrunc
+	dd if=bootsect.bin of=babyos.img bs=512 count=1 conv=notrunc
+	dd if=loader.bin of=babyos.img bs=512 count=2 seek=1 conv=notrunc
+	dd if=kernel.elf of=babyos.img bs=512 count=15 seek=3 conv=notrunc
 ##############################################################################################
 
 qemu:babyos

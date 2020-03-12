@@ -24,7 +24,7 @@ DESC_DATA_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + D
 DESC_VIDEO_HIGH4 equ (0x00 << 24) + DESC_G_4K + DESC_D_32 + DESC_L + DESC_AVL + DESC_LIMIT_VIDEO2 + DESC_P + DESC_DPL_0 + DESC_S_DATA + DESC_TYPE_DATA + 0x0b
 
 KERNEL_PHY_ADDR equ 0x90000
-org 0x70000
+org 0x900
 [bits 16]
 align 16
 Entry:
@@ -38,23 +38,23 @@ Entry:
 	mov sp, 0x7c00
 
 	
-	; mov ax, 0xb800
-	; mov es, ax
-	; ;show 'LOADER'
-	; mov byte [es:160+0],'L'
-	; mov byte [es:160+1],0x07
-	; mov byte [es:160+2],'O'
-	; mov byte [es:160+3],0x07
-	; mov byte [es:160+4],'A'
-	; mov byte [es:160+5],0x07
-	; mov byte [es:160+6],'D'
-	; mov byte [es:160+7],0x07
-	; mov byte [es:160+8],'E'
-	; mov byte [es:160+9],0x07
-	; mov byte [es:160+10],'R'
-	; mov byte [es:160+11],0x07
+	mov ax, 0xb800
+	mov es, ax
+	;show 'LOADER'
+	mov byte [es:160+0],'L'
+	mov byte [es:160+1],0x07
+	mov byte [es:160+2],'O'
+	mov byte [es:160+3],0x07
+	mov byte [es:160+4],'A'
+	mov byte [es:160+5],0x07
+	mov byte [es:160+6],'D'
+	mov byte [es:160+7],0x07
+	mov byte [es:160+8],'E'
+	mov byte [es:160+9],0x07
+	mov byte [es:160+10],'R'
+	mov byte [es:160+11],0x07
 
-	;jmp $
+	jmp $
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; kernel.elf加载到0x90000处
