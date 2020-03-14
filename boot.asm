@@ -6,7 +6,7 @@ entry:
     mov es,ax
     mov ss,ax
     mov sp,0x7c00
-	mov ax,0xb800
+    mov ax,0xb800
 	mov gs,ax
 
 clear_screen:  
@@ -47,7 +47,7 @@ show_boot:
 load_loader:
 	mov ax,1
 	mov bx,0x900
-	mov cx,2
+	mov cx,4
 	call rd_disk_m_16
 
 jmp_to_loader:

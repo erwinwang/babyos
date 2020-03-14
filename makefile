@@ -18,7 +18,7 @@ QEMU = qemu-system-i386
 QEMUOPTS = -drive file=babyos.img,index=0,media=disk,format=raw -m 512 $(QEMUEXTRA)
 
 ##############################################################################################
-bootsect.bin: bootsect.asm
+boot.bin: boot.asm
 	$(AS) -o $@ $<
 
 OBJS = \
@@ -73,14 +73,14 @@ memory.o: memory.c
 	$(CC) $(CFLAGS) $< -o $@
 	
 kernel.elf: $(OBJS)
-	$(LD) $(LDFLAGS) -N -e start -Ttext $(ENTRY_POINT) -o $@ $(OBJS)
+	$(LD) $(LDFLAGS) -e main -Ttext $(ENTRY_POINT) -o $@ $(OBJS)
 	$(OBJDUMP) -M intel -D kernel.elf > kernel.elf.dumpdisasm
 	
 babyos: bootsect.bin loader.bin kernel.elf
 	dd if=/dev/zero of=babyos.img bs=512 count=2880
 	dd if=bootsect.bin of=babyos.img bs=512 count=1 conv=notrunc
-	dd if=loader.bin of=babyos.img bs=512 count=2 seek=1 conv=notrunc
-	dd if=kernel.elf of=babyos.img bs=512 count=15 seek=3 conv=notrunc
+	dd if=loader.bin of=babyos.img bs=512 count=8 seek=1 conv=notrunc
+	dd if=kernel.elf of=babyos.img bs=512 count=200 seek=9 conv=notrunc
 ##############################################################################################
 
 qemu:babyos
