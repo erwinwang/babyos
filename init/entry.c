@@ -3,6 +3,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "timer.h"
+#include "kbd_ps2.h"
 
 int kern_entry()
 {
@@ -13,7 +14,8 @@ int kern_entry()
     console_clear();
     printk_color(rc_black, rc_green, "Hello, OS kernel!\n");
 
-    init_timer(200);
+    //init_timer(200);
+    init_keyboard_ps2();
 
     // 开启中断
     asm volatile ("sti");
