@@ -20,6 +20,7 @@
 #define INCLUDE_STRING_H_
 
 #include "types.h"
+#include "debug.h"
 
 static inline void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len)
 {
@@ -87,6 +88,23 @@ static inline int strlen(const char *src)
 	      ;
 
 	return (eos - src - 1);
+}
+
+static inline char* strchr(const char* str, const uint8_t ch)
+{
+	assert(str != NULL, "str is null");
+	while (*str != 0)
+	{
+		if (*str == ch)
+		{
+			/* code */
+			return (char*)str;
+		}
+		str++;
+		/* code */
+	}
+	
+	return NULL;
 }
 
 #endif 	// INCLUDE_STRING_H_
