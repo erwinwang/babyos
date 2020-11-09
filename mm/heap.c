@@ -194,3 +194,4 @@ void test_heap()
 	printk("free mem in 0x%X\n\n", addr4);
 	kfree(addr4);
 }
+

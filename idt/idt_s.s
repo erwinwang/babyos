@@ -159,3 +159,4 @@ irq_common_stub:
 	add esp, 8     		 ; 清理压栈的 错误代码 和 ISR 编号
 	iret          		 ; 出栈 CS, EIP, EFLAGS, SS, ESP
 .end:
+

@@ -87,3 +87,4 @@ void pmm_free_page(uint32_t p)
 
 	pmm_stack[++pmm_stack_top] = p;
 }
+

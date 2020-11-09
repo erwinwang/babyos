@@ -1,3 +1,21 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  elf.h
+ *
+ *    Description:  ELF 格式的部分定义
+ *
+ *        Version:  1.0
+ *        Created:  2013年11月06日 12时47分12秒
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Hurley (LiuHuan), liuhuan1992@gmail.com
+ *        Company:  Class 1107 of Computer Science and Technology
+ *
+ * =====================================================================================
+ */
+
 #ifndef INCLUDE_ELF_H_
 #define INCLUDE_ELF_H_
 
@@ -47,4 +65,4 @@ elf_t elf_from_multiboot(multiboot_t *mb);
 // 查看ELF的符号信息
 const char *elf_lookup_symbol(uint32_t addr, elf_t *elf);
 
-#endif  // INCLUDE_ELF_H_
+#endif 	// INCLUDE_ELF_H_
