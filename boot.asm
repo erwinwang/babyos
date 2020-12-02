@@ -1,12 +1,17 @@
+%include "const.inc"
+%include "config.inc"
+
 org 0x7c00
 [bits 16]
 align 16
 
-entry:
-	mov ax, cs
-	mov ds, ax
+start:
+    cli
+
+    xor ax,ax
+	mov ds,ax
 	mov ss, ax
-	mov sp, 0
+	mov sp, 0x7c00
 	mov ax, 0xb800
 	mov es, ax
 
@@ -22,16 +27,35 @@ entry:
 	mov byte [es:6],'T'
 	mov byte [es:7],0x07
 
-    ; jmp $
+seta20.1:
+    in al,0x64
+    test al,0x2
+    jnz seta20.1
 
-    ; mov ax, LOADER_SEG
-    ; mov dx, 0
-    ; mov si, LOADER_OFF
-    ; mov cx, LOADER_CNTS
-    ; xor bx, bx
-    ; call read_sectors
+    mov al,0xd1
+    out 0x64,al
 
-	; jmp LOADER_SEG:0
+seta20.2:
+    in al,0x64
+    test al,0x2
+    jnz seta20.2
+
+    mov al,0xdf
+    out 0x60,al
+
+    ; Switch from real to protected mode.  Use a bootstrap GDT that makes
+    ; virtual addresses map directly to physical addresses so that the
+    ; effective memory map doesn't change during the transition.
+    lgdt [gdtdesc]
+    ;set CR0 bit PE
+	mov eax,cr0
+	or  eax,1
+	mov cr0,eax
+
+    ; # Complete the transition to 32-bit protected mode by using a long jmp
+    ; # to reload %cs and %eip.  The segment descriptors are set up with no
+    ; # translation, so that the mapping is still the identity mapping.
+    jmp dword 0x08:start32
 
 ;clean screan
 clean_screen:
@@ -39,6 +63,64 @@ clean_screen:
 	int 0x10
     ret
 
+;boot phase Global Descriptor Table(GDT)
+gdt_table:
+	dd		0x00000000
+	dd		0x00000000
+	dd		0x0000ffff
+	dd		0x00cf9A00
+	dd		0x0000ffff
+	dd		0x00cf9200
+	
+gdt_length equ $ - gdt_table	
+gdtdesc:
+	dw	(gdt_length-1)
+	dd	gdt_table
+
+[bits 32]
+align 32
+start32:
+;   # Set up the protected-mode data segment registers
+;   movw    $(SEG_KDATA<<3), %ax    # Our data segment selector
+;   movw    %ax, %ds                # -> DS: Data Segment
+;   movw    %ax, %es                # -> ES: Extra Segment
+;   movw    %ax, %ss                # -> SS: Stack Segment
+;   movw    $0, %ax                 # Zero segments not ready for use
+;   movw    %ax, %fs                # -> FS
+;   movw    %ax, %gs                # -> GS
+
+	mov ax, 0x10	;the data selector
+	mov ds, ax 
+	mov es, ax
+    mov ss, ax
+    mov ax, 0 
+	mov fs, ax 
+	mov gs, ax 
+
+	mov esp, start
+    ; call    bootmain
+    
+    ;show 'LOADER'
+    mov eax, 0xb8000
+    add eax, 160
+	mov byte [eax+0],'L'
+	mov byte [eax+1],0x07
+	mov byte [eax+2],'O'
+	mov byte [eax+3],0x07
+	mov byte [eax+4],'A'
+	mov byte [eax+5],0x07
+	mov byte [eax+6],'D'
+	mov byte [eax+7],0x07
+	mov byte [eax+8],'E'
+	mov byte [eax+9],0x07
+	mov byte [eax+10],'R'
+	mov byte [eax+11],0x07
+
+spin:
+    hlt
+    jmp spin
+
+   
 ; %ifdef CONFIG_BOOT_FLOPPY
 ; ; function: read a sector data from floppy
 ; ; @input:

@@ -13,9 +13,11 @@ C_OBJECTS = \
 
 S_SOURCES = \
 			boot.asm\
+			loader.asm\
 
 S_OBJECTS = \
 			boot.bin\
+			loader.bin\
 
 
 
@@ -30,6 +32,9 @@ ASM_FLAGS = -f bin
 all: $(S_OBJECTS) $(C_OBJECTS) update_image
 
 boot.bin:boot.asm
+	$(ASM) $(ASM_FLAGS) $< -o $@
+
+loader.bin:loader.asm
 	$(ASM) $(ASM_FLAGS) $< -o $@
 
 # # The automatic variable `$<' is just the first prerequisite
@@ -52,6 +57,7 @@ clean:
 .PHONY:update_image
 update_image:
 	dd if=boot.bin of=babyos.img bs=512 count=1 conv=notrunc
+	dd if=loader.bin of=babyos.img seek=2 bs=512 count=1 conv=notrunc
 
 .PHONY:qemu
 qemu:
