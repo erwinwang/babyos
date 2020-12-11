@@ -95,7 +95,7 @@ start32:
     mov ss, ax
     mov ax, 0 
 	mov fs, ax 
-	mov gs, ax 
+	mov gs, ax
 
 	mov esp, start
     ; call    bootmain
