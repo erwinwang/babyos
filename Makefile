@@ -8,79 +8,79 @@
 # --------------------------------------------------------
 #
 
-# patsubst 处理所有在 C_SOURCES 字列中的字（一列文件名），如果它的 结尾是 '.c'，就用 '.o' 把 '.c' 取代
-C_SOURCES = \
-		entry.c\
-		common.c\
-		console.c\
-		debug.c\
-		elf.c\
-		printk.c\
-
-C_OBJECTS = \
-		entry.o\
-		common.o\
-		console.o\
-		debug.o\
-		elf.o\
-		printk.o\
-
-S_SOURCES = \
-		boot.s\
-
-S_OBJECTS = \
-		boot.o\
-
 CC = gcc
 LD = ld
 ASM = nasm
+OBJCOPY = objcopy
+OBJDUMP = objdump
 
-C_FLAGS = -c -Wall -m32 -ggdb -gstabs+ -nostdinc -fno-builtin -fno-stack-protector
+C_FLAGS = -c -fno-pic -static -fno-builtin -fno-strict-aliasing -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
 LD_FLAGS = -T kernel.ld -m elf_i386 -nostdlib
-ASM_FLAGS = -f elf -g -F stabs
+ASM_FLAGS = -f elf
+ASM_BINFLAGS = -f bin
 
 all: $(S_OBJECTS) $(C_OBJECTS) link
 
 # # The automatic variable `$<' is just the first prerequisite
-.c.o:
-	$(CC) $(C_FLAGS) $< -o $@
-
-.s.o:
-	$(ASM) $(ASM_FLAGS) $<
-
-# boot.o:boot.s
-# 	$(ASM) $(ASM_FLAGS) $<
-
-# entry.o:entry.c
+# .c.o:
 # 	$(CC) $(C_FLAGS) $< -o $@
 
-bootsect.bin:bootsect.asm
-	$(ASM) $< -o $@
+# .s.o:
+# 	$(ASM) $(ASM_FLAGS) $<
 
-prog.bin:prog.asm
-	$(ASM) $< -o $@
+boot.bin:boot.asm
+	$(ASM) $(ASM_BINFLAGS) -o $@ $<
+
+loader.bin:loader.asm
+	$(ASM) $(ASM_BINFLAGS) -o $@ $<
+
+#####setup.bin#################################
+start.o: start.asm
+	$(ASM) $(ASM_FLAGS) $<
+
+setup.o: setup.c
+	$(CC) $(C_FLAGS) $< -o $@
+
+console.o: console.c
+	$(CC) $(C_FLAGS) $< -o $@
+
+common.o: common.c
+	$(CC) $(C_FLAGS) $< -o $@
+
+printk.o: printk.c
+	$(CC) $(C_FLAGS) $< -o $@
+#####end setup.bin#################################
+
+SETUP_LDFLAGS = -no-pie -e _start -Ttext 0x91000
+SETUP_OBJS    = start.o setup.o console.o common.o printk.o
+
+setup.bin: $(SETUP_OBJS)
+	$(LD) $(SETUP_LDFLAGS) -o setup.elf $(SETUP_OBJS)
+	$(OBJCOPY) -R .note -R .comment -S -O binary setup.elf $@
 
 link: $(S_OBJECTS) $(C_OBJECTS)
 	$(LD) $(LD_FLAGS) $(S_OBJECTS) $(C_OBJECTS) -o hx_kernel
 
-.PHONY:linux.img
-linux.img:bootsect.bin prog.bin
+.PHONY:linux
+linux:boot.bin loader.bin setup.bin
 	dd if=/dev/zero of=linux.img bs=512 count=2880
-	dd if=bootsect.bin of=linux.img bs=512 count=1 conv=notrunc
-	dd if=prog.bin of=linux.img bs=512 seek=1 count=1 conv=notrunc
+	dd if=boot.bin of=linux.img bs=512 count=1 conv=notrunc
+	dd if=loader.bin of=linux.img bs=512 seek=2 count=8 conv=notrunc
+	dd if=setup.bin of=linux.img bs=512 seek=10 count=90 conv=notrunc
 
 .PHONY:clean
 clean:
-	$(RM) *.o
+	$(RM) *.o *.bin *.elf
 
 .PHONY:qemu
-qemu:linux.img
+qemu:linux
 	qemu-system-i386 -fda linux.img -boot a
 	#add '-nographic' option if using server of linux distro, such as fedora-server,or "gtk initialization failed" error will occur.
 
 .PHONY:debug
 debug:
-	qemu-system-i386 -S -s -kernel hx_kernel
-	sleep 1
-	gdb -x gdbinit
+	qemu-system-i386 -S -s -fda linux.img -boot a
+
+.PHONY:run
+run:qemu
 

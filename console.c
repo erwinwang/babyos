@@ -196,4 +196,3 @@ void console_write_dec(uint32_t n, real_color_t back, real_color_t fore)
 
 	console_write_color(c2, back, fore);
 }
-

@@ -90,4 +90,3 @@ static inline int strlen(const char *src)
 }
 
 #endif 	// INCLUDE_STRING_H_
-
