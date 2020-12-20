@@ -50,14 +50,14 @@ _start:
 	; jump to c code.
 	jmp setup_entry
 
-; global outb
-; outb:	; void outb(unsigned int port, unsigned int data);
-; 	push edx
-;     mov		edx,[esp+8]
-; 	mov		al,[esp+12]
-; 	out		dx,al
-; 	pop edx
-;     ret
+global outb
+outb:	; void outb(unsigned int port, unsigned int data);
+	push edx
+    mov		edx,[esp+8]
+	mov		al,[esp+12]
+	out		dx,al
+	pop edx
+    ret
 
 global enable_paging
 enable_paging:

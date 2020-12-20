@@ -28,6 +28,11 @@ all: $(S_OBJECTS) $(C_OBJECTS) link
 # .s.o:
 # 	$(ASM) $(ASM_FLAGS) $<
 
+
+link: $(S_OBJECTS) $(C_OBJECTS)
+	$(LD) $(LD_FLAGS) $(S_OBJECTS) $(C_OBJECTS) -o hx_kernel
+
+########boot.bin loader.bin####################
 boot.bin:boot.asm
 	$(ASM) $(ASM_BINFLAGS) -o $@ $<
 
@@ -41,6 +46,23 @@ start.o: start.asm
 setup.o: setup.c
 	$(CC) $(C_FLAGS) $< -o $@
 
+page.o: page.c
+	$(CC) $(C_FLAGS) $< -o $@
+
+lib.o: lib.c
+	$(CC) $(C_FLAGS) $< -o $@
+#####end setup.bin#################################
+SETUP_LDFLAGS = -no-pie -e _start -Ttext 0x91000
+SETUP_OBJS    = start.o setup.o page.o lib.o
+
+setup.bin: $(SETUP_OBJS)
+	$(LD) $(SETUP_LDFLAGS) -o setup.elf $(SETUP_OBJS)
+	$(OBJCOPY) -R .note -R .comment -S -O binary setup.elf $@
+
+#####kernel.elf#################################
+main.o: main.c
+	$(CC) $(C_FLAGS) $< -o $@
+
 console.o: console.c
 	$(CC) $(C_FLAGS) $< -o $@
 
@@ -49,24 +71,42 @@ common.o: common.c
 
 printk.o: printk.c
 	$(CC) $(C_FLAGS) $< -o $@
-#####end setup.bin#################################
 
-SETUP_LDFLAGS = -no-pie -e _start -Ttext 0x91000
-SETUP_OBJS    = start.o setup.o console.o common.o printk.o
+gdt.o: gdt.c
+	$(CC) $(C_FLAGS) $< -o $@
 
-setup.bin: $(SETUP_OBJS)
-	$(LD) $(SETUP_LDFLAGS) -o setup.elf $(SETUP_OBJS)
-	$(OBJCOPY) -R .note -R .comment -S -O binary setup.elf $@
+gdt_flush.o: gdt_flush.asm
+	$(ASM) $(ASM_FLAGS) $<
 
-link: $(S_OBJECTS) $(C_OBJECTS)
-	$(LD) $(LD_FLAGS) $(S_OBJECTS) $(C_OBJECTS) -o hx_kernel
+idt.o: idt.c
+	$(CC) $(C_FLAGS) $< -o $@
 
+idt_flush.o: idt_flush.asm
+	$(ASM) $(ASM_FLAGS) $<
+
+timer.o: timer.c
+	$(CC) $(C_FLAGS) $< -o $@
+
+keyboard.o: keyboard.c
+	$(CC) $(C_FLAGS) $< -o $@
+#####end kernel.elf#################################
+KERNEL_LDFLAGS = -T kernel.ld -m elf_i386 -nostdlib
+KERNEL_OBJS    = main.o common.o console.o printk.o gdt.o gdt_flush.o idt.o idt_flush.o\
+				timer.o keyboard.o\
+
+kernel.elf: $(KERNEL_OBJS)
+	$(LD) $(KERNEL_LDFLAGS) -o $@ $(KERNEL_OBJS)
+
+
+KERNEL_OFF 	= 100
+KERNEL_CNTS	= 1024		# assume 512kb 
 .PHONY:linux
-linux:boot.bin loader.bin setup.bin
+linux:boot.bin loader.bin setup.bin kernel.elf
 	dd if=/dev/zero of=linux.img bs=512 count=2880
 	dd if=boot.bin of=linux.img bs=512 count=1 conv=notrunc
 	dd if=loader.bin of=linux.img bs=512 seek=2 count=8 conv=notrunc
 	dd if=setup.bin of=linux.img bs=512 seek=10 count=90 conv=notrunc
+	dd if=kernel.elf of=linux.img bs=512 seek=100 count=1024 conv=notrunc
 
 .PHONY:clean
 clean:
