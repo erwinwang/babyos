@@ -15,6 +15,7 @@ int kernel_start(void)
 
     console_clear();
     printk("Hello kernel!\n");
+    printk("Another tour...");
 
     // __asm__ __volatile__ ("int $0x3");
     // __asm__ __volatile__ ("int $0x4");
