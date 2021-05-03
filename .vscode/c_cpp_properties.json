@@ -25,7 +25,7 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\BuildTools\\gcc.exe",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu89",
             "cppStandard": "c++03",
             "intelliSenseMode": "gcc-x86"

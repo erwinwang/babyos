@@ -14,23 +14,11 @@ ASM = nasm
 OBJCOPY = objcopy
 OBJDUMP = objdump
 
-C_FLAGS = -c -fno-pic -static -fno-builtin -fno-strict-aliasing -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
+C_FLAGS = -c -fno-pic -fno-stack-protector -static -fno-builtin -fno-strict-aliasing -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
 LD_FLAGS = -T kernel.ld -m elf_i386 -nostdlib
 ASM_FLAGS = -f elf
 ASM_BINFLAGS = -f bin
 
-all: $(S_OBJECTS) $(C_OBJECTS) link
-
-# # The automatic variable `$<' is just the first prerequisite
-# .c.o:
-# 	$(CC) $(C_FLAGS) $< -o $@
-
-# .s.o:
-# 	$(ASM) $(ASM_FLAGS) $<
-
-
-link: $(S_OBJECTS) $(C_OBJECTS)
-	$(LD) $(LD_FLAGS) $(S_OBJECTS) $(C_OBJECTS) -o hx_kernel
 
 ########boot.bin loader.bin####################
 boot.bin:boot.asm
@@ -51,8 +39,9 @@ page.o: page.c
 
 lib.o: lib.c
 	$(CC) $(C_FLAGS) $< -o $@
+
 #####end setup.bin#################################
-SETUP_LDFLAGS = -no-pie -e _start -Ttext 0x91000
+SETUP_LDFLAGS = -m elf_i386 -nostdlib -no-pie -e _start -Ttext 0x91000
 SETUP_OBJS    = start.o setup.o page.o lib.o
 
 setup.bin: $(SETUP_OBJS)
@@ -90,9 +79,9 @@ timer.o: timer.c
 keyboard.o: keyboard.c
 	$(CC) $(C_FLAGS) $< -o $@
 #####end kernel.elf#################################
-KERNEL_LDFLAGS = -T kernel.ld -m elf_i386 -nostdlib
+KERNEL_LDFLAGS = -m elf_i386 -nostdlib -T kernel.ld 
 KERNEL_OBJS    = main.o common.o console.o printk.o gdt.o gdt_flush.o idt.o idt_flush.o\
-				timer.o keyboard.o\
+				timer.o keyboard.o \
 
 kernel.elf: $(KERNEL_OBJS)
 	$(LD) $(KERNEL_LDFLAGS) -o $@ $(KERNEL_OBJS)
@@ -110,7 +99,7 @@ linux:boot.bin loader.bin setup.bin kernel.elf
 
 .PHONY:clean
 clean:
-	$(RM) *.o *.bin *.elf
+	$(RM) *.o *.bin *.elf *.img
 
 .PHONY:qemu
 qemu:linux
